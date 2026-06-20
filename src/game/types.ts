@@ -72,6 +72,8 @@ export interface Keys {
   right: boolean;
   up: boolean;
   down: boolean;
-  jump: boolean;
-  fire: boolean;
+  jumpHeld: boolean;
+  jumpPressed: boolean;
+  fireHeld: boolean;
+  firePressed: boolean;
 }

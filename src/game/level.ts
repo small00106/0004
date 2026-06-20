@@ -100,8 +100,8 @@ export function generateLevel(): { blocks: Block[]; enemies: Enemy[]; powerUps: 
     hit: false,
   });
 
-  enemies.push(createEnemy('goomba', 350, GROUND_Y - GOOMBA_HEIGHT));
   enemies.push(createEnemy('goomba', 500, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 650, GROUND_Y - GOOMBA_HEIGHT));
   enemies.push(createEnemy('goomba', 820, GROUND_Y - GOOMBA_HEIGHT));
   enemies.push(createEnemy('koopa', 900, GROUND_Y - KOOPA_HEIGHT));
   enemies.push(createEnemy('goomba', 1100, GROUND_Y - GOOMBA_HEIGHT));

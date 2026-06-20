@@ -46,8 +46,10 @@ export function useGame() {
     right: false,
     up: false,
     down: false,
-    jump: false,
-    fire: false,
+    jumpHeld: false,
+    jumpPressed: false,
+    fireHeld: false,
+    firePressed: false,
   });
 
   const frameRef = useRef(0);
@@ -89,10 +91,18 @@ export function useGame() {
     if (key === 'd' || key === 'arrowright') keysRef.current.right = true;
     if (key === 'w' || key === 'arrowup' || key === ' ') {
       keysRef.current.up = true;
-      keysRef.current.jump = true;
+      if (!e.repeat && !keysRef.current.jumpHeld) {
+        keysRef.current.jumpPressed = true;
+      }
+      keysRef.current.jumpHeld = true;
     }
     if (key === 's' || key === 'arrowdown') keysRef.current.down = true;
-    if (key === 'j') keysRef.current.fire = true;
+    if (key === 'j') {
+      if (!e.repeat && !keysRef.current.fireHeld) {
+        keysRef.current.firePressed = true;
+      }
+      keysRef.current.fireHeld = true;
+    }
   }, []);
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
@@ -101,10 +111,12 @@ export function useGame() {
     if (key === 'd' || key === 'arrowright') keysRef.current.right = false;
     if (key === 'w' || key === 'arrowup' || key === ' ') {
       keysRef.current.up = false;
-      keysRef.current.jump = false;
+      keysRef.current.jumpHeld = false;
     }
     if (key === 's' || key === 'arrowdown') keysRef.current.down = false;
-    if (key === 'j') keysRef.current.fire = false;
+    if (key === 'j') {
+      keysRef.current.fireHeld = false;
+    }
   }, []);
 
   useEffect(() => {
@@ -126,7 +138,10 @@ export function useGame() {
 
     const gameLoop = () => {
       frameRef.current++;
-      setGameState((prev) => updateGame(prev, keysRef.current, frameRef.current, lastFireRef));
+      const currentKeys = { ...keysRef.current };
+      setGameState((prev) => updateGame(prev, currentKeys, frameRef.current, lastFireRef));
+      keysRef.current.jumpPressed = false;
+      keysRef.current.firePressed = false;
       animationRef.current = requestAnimationFrame(gameLoop);
     };
 
@@ -172,14 +187,13 @@ function updateGame(
     if (Math.abs(newPlayer.vx) < 0.1) newPlayer.vx = 0;
   }
 
-  if (keys.jump && !newPlayer.isJumping) {
+  if (keys.jumpPressed && !newPlayer.isJumping) {
     newPlayer.vy = JUMP_FORCE;
     newPlayer.isJumping = true;
     soundManager.jump();
-    keys.jump = false;
   }
 
-  if (keys.fire && newPlayer.hasFire && frame - lastFireRef.current > 20) {
+  if (keys.firePressed && newPlayer.hasFire && frame - lastFireRef.current > 20) {
     const fbX = newPlayer.direction === 1 ? newPlayer.x + newPlayer.width : newPlayer.x - 16;
     const fbY = newPlayer.y + newPlayer.height / 3;
     newFireballs.push(createFireball(fbX, fbY, newPlayer.direction));
@@ -325,11 +339,14 @@ function updateGame(
         newPlayer.score += 100;
         soundManager.stomp();
       } else if (!newPlayer.invincible) {
+        const knockbackDir = newPlayer.x < enemy.x ? -1 : 1;
         if (newPlayer.isBig) {
           newPlayer = resizePlayer(newPlayer, false);
           newPlayer.hasFire = false;
           newPlayer.invincible = true;
           newPlayer.invincibleTimer = INVINCIBLE_DURATION;
+          newPlayer.vy = JUMP_FORCE / 2;
+          newPlayer.vx = knockbackDir * MOVE_SPEED;
           soundManager.bump();
         } else {
           newPlayer.lives--;
@@ -337,14 +354,10 @@ function updateGame(
             newGameStatus = 'gameover';
             soundManager.gameOver();
           } else {
-            newPlayer = {
-              ...createInitialPlayer(),
-              lives: newPlayer.lives,
-              score: newPlayer.score,
-              coins: newPlayer.coins,
-              invincible: true,
-              invincibleTimer: INVINCIBLE_DURATION,
-            };
+            newPlayer.invincible = true;
+            newPlayer.invincibleTimer = INVINCIBLE_DURATION;
+            newPlayer.vy = JUMP_FORCE / 2;
+            newPlayer.vx = knockbackDir * MOVE_SPEED;
             soundManager.death();
           }
         }
@@ -439,12 +452,13 @@ function updateGame(
       newFb.active = false;
     }
 
-    for (const enemy of newEnemies) {
-      if (enemy.alive && checkCollision(newFb, enemy)) {
-        enemy.alive = false;
+    for (let j = 0; j < newEnemies.length; j++) {
+      if (newEnemies[j].alive && checkCollision(newFb, newEnemies[j])) {
+        newEnemies[j] = { ...newEnemies[j], alive: false };
         newFb.active = false;
         newPlayer.score += 200;
         soundManager.stomp();
+        break;
       }
     }
 
@@ -480,11 +494,6 @@ function checkBlockCollisions(
   blocks: Block[]
 ): Block | null {
   for (const block of blocks) {
-    if (block.type === 'question' && block.hit) {
-      if (obj.y + obj.height <= block.y || obj.y >= block.y + block.height) {
-        continue;
-      }
-    }
     if (checkCollision(obj, block)) {
       return block;
     }

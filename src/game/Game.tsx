@@ -52,7 +52,7 @@ export const Game: React.FC = () => {
           金币: <span className="text-yellow-400">{player.coins}</span>
         </div>
         <div className="text-xl font-bold">
-          生命: <span className="text-red-400">{'❤️'.repeat(player.lives)}</span>
+          生命: <span className="text-red-400">{'❤️'.repeat(Math.max(0, player.lives))}</span>
         </div>
         {player.hasFire && (
           <div className="text-xl font-bold text-orange-400">🔥 火焰模式</div>
