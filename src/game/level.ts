@@ -56,17 +56,28 @@ export function generateLevel(): { blocks: Block[]; enemies: Enemy[]; powerUps: 
 
   addBrickRow(blocks, 768, GROUND_Y - BLOCK_SIZE * 3, 3, 'brick');
   addBrickRow(blocks, 800, GROUND_Y - BLOCK_SIZE * 5, 1, 'question', 'coin');
+  addBrickRow(blocks, 832, GROUND_Y - BLOCK_SIZE * 5, 1, 'special', 'star');
 
   addBrickRow(blocks, 1024, GROUND_Y - BLOCK_SIZE * 4, 7, 'brick');
   addBrickRow(blocks, 1056, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'flower');
   addBrickRow(blocks, 1120, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'coin');
+  addBrickRow(blocks, 1152, GROUND_Y - BLOCK_SIZE * 4, 1, 'special', 'speed');
 
   addBrickRow(blocks, 1600, GROUND_Y - BLOCK_SIZE * 2, 1, 'question', 'coin');
   addBrickRow(blocks, 1664, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'mushroom');
   addBrickRow(blocks, 1728, GROUND_Y - BLOCK_SIZE * 6, 1, 'question', 'coin');
+  addBrickRow(blocks, 1760, GROUND_Y - BLOCK_SIZE * 6, 1, 'special', 'star');
 
   addBrickRow(blocks, 2048, GROUND_Y - BLOCK_SIZE * 3, 8, 'brick');
   addBrickRow(blocks, 2080, GROUND_Y - BLOCK_SIZE * 3, 1, 'question', 'flower');
+  addBrickRow(blocks, 2176, GROUND_Y - BLOCK_SIZE * 3, 1, 'special', 'speed');
+
+  addBrickRow(blocks, 384, GROUND_Y - BLOCK_SIZE * 4, 2, 'brick');
+  addBrickRow(blocks, 512, GROUND_Y - BLOCK_SIZE * 5, 3, 'brick');
+  addBrickRow(blocks, 1216, GROUND_Y - BLOCK_SIZE * 3, 3, 'brick');
+  addBrickRow(blocks, 1536, GROUND_Y - BLOCK_SIZE * 4, 2, 'brick');
+  addBrickRow(blocks, 2304, GROUND_Y - BLOCK_SIZE * 4, 4, 'brick');
+  addBrickRow(blocks, 2560, GROUND_Y - BLOCK_SIZE * 5, 3, 'brick');
 
   addStairs(blocks, 2800, GROUND_Y, 8);
 
@@ -100,19 +111,25 @@ export function generateLevel(): { blocks: Block[]; enemies: Enemy[]; powerUps: 
     hit: false,
   });
 
-  enemies.push(createEnemy('goomba', 500, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 650, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 420, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 780, GROUND_Y - GOOMBA_HEIGHT));
   enemies.push(createEnemy('goomba', 820, GROUND_Y - GOOMBA_HEIGHT));
   enemies.push(createEnemy('koopa', 900, GROUND_Y - KOOPA_HEIGHT));
   enemies.push(createEnemy('goomba', 1100, GROUND_Y - GOOMBA_HEIGHT));
   enemies.push(createEnemy('goomba', 1180, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 1450, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('koopa', 1700, GROUND_Y - KOOPA_HEIGHT));
-  enemies.push(createEnemy('goomba', 1900, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2100, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('koopa', 2200, GROUND_Y - KOOPA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2600, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2700, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('koopa', 1560, GROUND_Y - KOOPA_HEIGHT));
+  enemies.push(createEnemy('goomba', 1780, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('koopa', 2000, GROUND_Y - KOOPA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2200, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2280, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('koopa', 2350, GROUND_Y - KOOPA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2680, GROUND_Y - GOOMBA_HEIGHT));
+
+  enemies.push(createEnemy('goomba', 416 + 16, GROUND_Y - BLOCK_SIZE * 2 - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 512 + 16, GROUND_Y - BLOCK_SIZE * 5 - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 1024 + 32, GROUND_Y - BLOCK_SIZE * 4 - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2048 + 64, GROUND_Y - BLOCK_SIZE * 3 - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2304 + 32, GROUND_Y - BLOCK_SIZE * 4 - GOOMBA_HEIGHT));
 
   return { blocks, enemies, powerUps };
 }
@@ -187,6 +204,10 @@ export function createInitialPlayer(): Player {
     hasFire: false,
     invincible: false,
     invincibleTimer: 0,
+    hasStar: false,
+    starTimer: 0,
+    hasSpeed: false,
+    speedTimer: 0,
     lives: 3,
     coins: 0,
     score: 0,
@@ -194,7 +215,7 @@ export function createInitialPlayer(): Player {
 }
 
 export function createPowerUp(type: PowerUpType, x: number, y: number): PowerUp {
-  const size = type === 'coin' ? COIN_SIZE : type === 'mushroom' ? MUSHROOM_SIZE : FLOWER_SIZE;
+  const size = type === 'coin' ? COIN_SIZE : type === 'mushroom' ? MUSHROOM_SIZE : type === 'flower' ? FLOWER_SIZE : 32;
   return {
     id: genId(),
     x,
@@ -246,7 +267,7 @@ export function resizePlayer(player: Player, isBig: boolean): Player {
 
 export function getSolidBlocks(blocks: Block[]): Block[] {
   return blocks.filter((b) => {
-    if (b.type === 'question' && b.hit) return false;
+    if ((b.type === 'question' || b.type === 'special') && b.hit) return false;
     return true;
   });
 }

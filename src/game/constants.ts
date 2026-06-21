@@ -1,8 +1,14 @@
-export const GRAVITY = 0.6;
-export const JUMP_FORCE = -12;
+export const GRAVITY = 0.55;
+export const JUMP_FORCE = -13.5;
+export const JUMP_HOLD_GRAVITY = 0.25;
+export const JUMP_RELEASE_BOOST = -3;
 export const MOVE_SPEED = 4;
-export const MAX_FALL_SPEED = 12;
+export const MAX_FALL_SPEED = 14;
 export const FRICTION = 0.85;
+
+export const STAR_DURATION = 480;
+export const SPEED_DURATION = 360;
+export const SPEED_MULTIPLIER = 1.6;
 
 export const PLAYER_WIDTH = 32;
 export const PLAYER_HEIGHT = 40;

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useGame } from './useGame';
-import { Mario, Block, Coin, Mushroom, Flower, Goomba, Koopa, Fireball, Cloud, Hill } from './GameSprites';
-import { GAME_WIDTH, GAME_HEIGHT, COLORS, BLOCK_SIZE, GROUND_Y, WORLD_WIDTH } from './constants';
+import { Mario, Block, Coin, Mushroom, Flower, Goomba, Koopa, Fireball, Cloud, Hill, Star, SpeedBoots } from './GameSprites';
+import { GAME_WIDTH, GAME_HEIGHT, COLORS, BLOCK_SIZE, GROUND_Y, WORLD_WIDTH, STAR_DURATION, SPEED_DURATION } from './constants';
 
 export const Game: React.FC = () => {
   const { gameState, frame, startGame, resetGame } = useGame();
@@ -44,7 +44,7 @@ export const Game: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 p-4">
-      <div className="mb-4 text-white flex gap-8 items-center">
+      <div className="mb-4 text-white flex gap-6 items-center flex-wrap">
         <div className="text-xl font-bold">
           分数: <span className="text-yellow-400">{player.score}</span>
         </div>
@@ -56,6 +56,16 @@ export const Game: React.FC = () => {
         </div>
         {player.hasFire && (
           <div className="text-xl font-bold text-orange-400">🔥 火焰模式</div>
+        )}
+        {player.hasStar && (
+          <div className="text-xl font-bold text-yellow-300 animate-pulse">
+            ⭐ 无敌 {Math.ceil(player.starTimer / 60)}s
+          </div>
+        )}
+        {player.hasSpeed && (
+          <div className="text-xl font-bold text-cyan-400 animate-pulse">
+            ⚡ 加速 {Math.ceil(player.speedTimer / 60)}s
+          </div>
         )}
       </div>
 
@@ -108,7 +118,7 @@ export const Game: React.FC = () => {
                 );
               } else if (pu.type === 'mushroom') {
                 return <Mushroom key={pu.id} x={pu.x} y={pu.y} />;
-              } else {
+              } else if (pu.type === 'flower') {
                 return (
                   <Flower
                     key={pu.id}
@@ -117,7 +127,26 @@ export const Game: React.FC = () => {
                     frame={frame}
                   />
                 );
+              } else if (pu.type === 'star') {
+                return (
+                  <Star
+                    key={pu.id}
+                    x={pu.x}
+                    y={pu.y}
+                    frame={frame}
+                  />
+                );
+              } else if (pu.type === 'speed') {
+                return (
+                  <SpeedBoots
+                    key={pu.id}
+                    x={pu.x}
+                    y={pu.y}
+                    frame={frame}
+                  />
+                );
               }
+              return null;
             })}
 
             {visibleEnemies.map((enemy) => {
@@ -158,6 +187,8 @@ export const Game: React.FC = () => {
               hasFire={player.hasFire}
               isJumping={player.isJumping}
               invincible={player.invincible}
+              hasStar={player.hasStar}
+              hasSpeed={player.hasSpeed}
             />
 
             <g transform={`translate(${WORLD_WIDTH - 80}, ${GROUND_Y - BLOCK_SIZE * 8})`}>
@@ -186,8 +217,9 @@ export const Game: React.FC = () => {
               <p className="mb-2">🎮 操作说明</p>
               <p>A / ← : 向左移动</p>
               <p>D / → : 向右移动</p>
-              <p>W / ↑ / 空格 : 跳跃</p>
+              <p>W / ↑ / 空格 : 跳跃（长按跳更高）</p>
               <p>J : 发射火球（需吃到火焰花）</p>
+              <p className="mt-3 text-yellow-300">⭐ 紫色特殊方块：顶出无敌星或加速靴</p>
             </div>
             <button
               onClick={startGame}
@@ -228,8 +260,9 @@ export const Game: React.FC = () => {
       </div>
 
       <div className="mt-4 text-gray-400 text-sm text-center">
-        <p>使用 WASD 移动，J 键发射火球。吃到蘑菇变大，吃到火焰花可以发射火球！</p>
-        <p className="mt-1">踩敌人可以消灭它们，从下方撞击问号方块获取道具。</p>
+        <p>使用 WASD 移动，J 键发射火球。长按跳跃键可以跳得更高！</p>
+        <p className="mt-1">踩敌人可以消灭它们，从下方撞击问号方块或紫色特殊方块获取道具。</p>
+        <p className="mt-1">⭐ 无敌星：无敌并秒杀敌人 &nbsp;&nbsp; ⚡ 加速靴：提升移动速度</p>
       </div>
     </div>
   );

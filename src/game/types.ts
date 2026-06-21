@@ -17,9 +17,9 @@ export interface GameObject extends Position, Size {
   id: string;
 }
 
-export type BlockType = 'brick' | 'question' | 'ground' | 'pipe';
+export type BlockType = 'brick' | 'question' | 'ground' | 'pipe' | 'special';
 export type EnemyType = 'goomba' | 'koopa';
-export type PowerUpType = 'coin' | 'mushroom' | 'flower';
+export type PowerUpType = 'coin' | 'mushroom' | 'flower' | 'star' | 'speed';
 
 export interface Block extends GameObject {
   type: BlockType;
@@ -49,6 +49,10 @@ export interface Player extends GameObject, Velocity {
   hasFire: boolean;
   invincible: boolean;
   invincibleTimer: number;
+  hasStar: boolean;
+  starTimer: number;
+  hasSpeed: boolean;
+  speedTimer: number;
   lives: number;
   coins: number;
   score: number;

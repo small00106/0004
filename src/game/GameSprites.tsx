@@ -9,16 +9,31 @@ interface MarioProps {
   hasFire: boolean;
   isJumping: boolean;
   invincible: boolean;
+  hasStar?: boolean;
+  hasSpeed?: boolean;
 }
 
-export const Mario: React.FC<MarioProps> = ({ x, y, direction, isBig, hasFire, isJumping, invincible }) => {
+export const Mario: React.FC<MarioProps> = ({ x, y, direction, isBig, hasFire, isJumping, invincible, hasStar = false, hasSpeed = false }) => {
   const height = isBig ? PLAYER_BIG_HEIGHT : PLAYER_HEIGHT;
   const hatColor = hasFire ? '#ffffff' : COLORS.mario;
   const overallColor = hasFire ? '#ffffff' : '#0000ff';
-  const opacity = invincible ? 0.5 : 1;
+  const opacity = invincible && !hasStar ? 0.5 : 1;
 
   return (
     <g transform={`translate(${x}, ${y}) scale(${direction}, 1) ${direction === -1 ? `translate(${-PLAYER_WIDTH}, 0)` : ''}`} style={{ opacity }}>
+      {hasStar && (
+        <>
+          <circle cx={PLAYER_WIDTH / 2} cy={height / 2} r={PLAYER_WIDTH * 0.8} fill="#ffff00" opacity="0.25" />
+          <circle cx={PLAYER_WIDTH / 2} cy={height / 2} r={PLAYER_WIDTH * 0.6} fill="#ff6600" opacity="0.2" />
+        </>
+      )}
+      {hasSpeed && (
+        <>
+          <line x1="-10" y1={height / 2} x2="-2" y2={height / 2} stroke="#00ffff" strokeWidth="2" />
+          <line x1="-14" y1={height / 3} x2="-4" y2={height / 3} stroke="#00ffff" strokeWidth="2" opacity="0.7" />
+          <line x1="-14" y1={height * 2 / 3} x2="-4" y2={height * 2 / 3} stroke="#00ffff" strokeWidth="2" opacity="0.7" />
+        </>
+      )}
       <rect x="6" y="0" width="20" height="8" fill={hatColor} />
       <rect x="2" y="8" width="28" height="4" fill={hatColor} />
       <rect x="8" y="12" width="16" height="12" fill={COLORS.marioSkin} />
@@ -49,7 +64,7 @@ export const Mario: React.FC<MarioProps> = ({ x, y, direction, isBig, hasFire, i
 interface BlockProps {
   x: number;
   y: number;
-  type: 'brick' | 'question' | 'ground' | 'pipe';
+  type: 'brick' | 'question' | 'ground' | 'pipe' | 'special';
   hit?: boolean;
 }
 
@@ -86,6 +101,30 @@ export const Block: React.FC<BlockProps> = ({ x, y, type, hit = false }) => {
         <rect x="2" y="2" width="28" height="28" fill="none" stroke="#fff" strokeWidth="1" />
         {!hit && (
           <text x="16" y="24" textAnchor="middle" fill="#fff" fontSize="20" fontWeight="bold">?</text>
+        )}
+      </g>
+    );
+  }
+
+  if (type === 'special') {
+    const color = hit ? '#663399' : '#9932cc';
+    const glowColor = hit ? 'none' : '#ff00ff';
+    return (
+      <g transform={`translate(${x}, ${y})`}>
+        {!hit && (
+          <rect x="-2" y="-2" width={BLOCK_SIZE + 4} height={BLOCK_SIZE + 4} fill={glowColor} opacity="0.3" />
+        )}
+        <rect width={BLOCK_SIZE} height={BLOCK_SIZE} fill={color} stroke="#000" strokeWidth="1" />
+        <rect x="2" y="2" width="28" height="28" fill="none" stroke="#ffff00" strokeWidth="1" />
+        {!hit && (
+          <>
+            <polygon
+              points="16,4 19,12 28,12 21,18 24,27 16,22 8,27 11,18 4,12 13,12"
+              fill="#ffff00"
+              stroke="#fff"
+              strokeWidth="0.5"
+            />
+          </>
         )}
       </g>
     );
@@ -157,6 +196,56 @@ export const Flower: React.FC<FlowerProps> = ({ x, y, frame }) => {
       </g>
       <circle r="6" fill={COLORS.flowerCenter} />
       <circle r="3" fill="#ff6b00" />
+    </g>
+  );
+};
+
+interface StarProps {
+  x: number;
+  y: number;
+  frame: number;
+}
+
+export const Star: React.FC<StarProps> = ({ x, y, frame }) => {
+  const rotation = (frame * 8) % 360;
+  const pulse = 1 + Math.sin(frame * 0.2) * 0.1;
+  return (
+    <g transform={`translate(${x + 16}, ${y + 16})`}>
+      <circle r="18" fill="#ffff00" opacity="0.3" />
+      <g transform={`rotate(${rotation}) scale(${pulse})`}>
+        <polygon
+          points="0,-14 4,-4 14,-4 6,3 9,13 0,7 -9,13 -6,3 -14,-4 -4,-4"
+          fill="#ffff00"
+          stroke="#ff8c00"
+          strokeWidth="1"
+        />
+        <polygon
+          points="0,-10 2,-3 9,-3 4,2 6,9 0,5 -6,9 -4,2 -9,-3 -2,-3"
+          fill="#fffacd"
+          opacity="0.6"
+        />
+      </g>
+    </g>
+  );
+};
+
+interface SpeedBootsProps {
+  x: number;
+  y: number;
+  frame: number;
+}
+
+export const SpeedBoots: React.FC<SpeedBootsProps> = ({ x, y, frame }) => {
+  const bobOffset = Math.sin(frame * 0.15) * 2;
+  return (
+    <g transform={`translate(${x}, ${y + bobOffset})`}>
+      <ellipse cx="16" cy="20" rx="18" ry="6" fill="#00ffff" opacity="0.3" />
+      <path d="M4,16 L4,26 Q4,30 10,30 L26,30 Q30,30 30,26 L30,20 L20,20 L18,16 L4,16 Z" fill="#00bfff" stroke="#000" strokeWidth="1" />
+      <path d="M6,18 L6,26 Q6,28 10,28 L24,28 L24,22 L18,22 L16,18 Z" fill="#00ffff" opacity="0.5" />
+      <line x1="-4" y1="14" x2="4" y2="18" stroke="#ffff00" strokeWidth="2" />
+      <line x1="-6" y1="20" x2="2" y2="22" stroke="#ffff00" strokeWidth="2" />
+      <line x1="-4" y1="26" x2="4" y2="26" stroke="#ffff00" strokeWidth="2" />
+      <text x="17" y="26" textAnchor="middle" fill="#fff" fontSize="10" fontWeight="bold">S</text>
     </g>
   );
 };

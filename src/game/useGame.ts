@@ -3,6 +3,8 @@ import { GameState, Keys, Block, Enemy, PowerUp, Fireball } from './types';
 import {
   GRAVITY,
   JUMP_FORCE,
+  JUMP_HOLD_GRAVITY,
+  JUMP_RELEASE_BOOST,
   MOVE_SPEED,
   MAX_FALL_SPEED,
   FRICTION,
@@ -10,6 +12,9 @@ import {
   WORLD_WIDTH,
   GAME_WIDTH,
   INVINCIBLE_DURATION,
+  STAR_DURATION,
+  SPEED_DURATION,
+  SPEED_MULTIPLIER,
   BLOCK_SIZE,
   FIREBALL_SPEED,
   PLAYER_WIDTH,
@@ -176,11 +181,13 @@ function updateGame(
   let newFireballs = [...fireballs];
   let newGameStatus = state.gameStatus;
 
+  const effectiveMoveSpeed = newPlayer.hasSpeed ? MOVE_SPEED * SPEED_MULTIPLIER : MOVE_SPEED;
+
   if (keys.left) {
-    newPlayer.vx = -MOVE_SPEED;
+    newPlayer.vx = -effectiveMoveSpeed;
     newPlayer.direction = -1;
   } else if (keys.right) {
-    newPlayer.vx = MOVE_SPEED;
+    newPlayer.vx = effectiveMoveSpeed;
     newPlayer.direction = 1;
   } else {
     newPlayer.vx *= FRICTION;
@@ -201,7 +208,18 @@ function updateGame(
     lastFireRef.current = frame;
   }
 
-  newPlayer.vy += GRAVITY;
+  if (newPlayer.isJumping && newPlayer.vy < 0) {
+    if (keys.jumpHeld) {
+      newPlayer.vy += JUMP_HOLD_GRAVITY;
+    } else {
+      newPlayer.vy += GRAVITY;
+      if (newPlayer.vy < JUMP_RELEASE_BOOST) {
+        newPlayer.vy = JUMP_RELEASE_BOOST;
+      }
+    }
+  } else {
+    newPlayer.vy += GRAVITY;
+  }
   if (newPlayer.vy > MAX_FALL_SPEED) newPlayer.vy = MAX_FALL_SPEED;
 
   newPlayer.x += newPlayer.vx;
@@ -247,6 +265,24 @@ function updateGame(
           newPlayer.score += 100;
           soundManager.coin();
         }
+      } else if (collisionY.type === 'special' && !collisionY.hit) {
+        newBlocks = newBlocks.map((b) =>
+          b.id === collisionY.id ? { ...b, hit: true } : b
+        );
+
+        if (collisionY.hasItem) {
+          const item = createPowerUp(
+            collisionY.hasItem,
+            collisionY.x + (BLOCK_SIZE - 32) / 2,
+            collisionY.y - 32
+          );
+          newPowerUps.push(item);
+          soundManager.powerUp();
+        } else {
+          newPlayer.coins += 3;
+          newPlayer.score += 300;
+          soundManager.coin();
+        }
       } else if (collisionY.type === 'brick') {
         if (newPlayer.isBig) {
           newBlocks = newBlocks.filter((b) => b.id !== collisionY.id);
@@ -281,6 +317,20 @@ function updateGame(
     newPlayer.invincibleTimer--;
     if (newPlayer.invincibleTimer <= 0) {
       newPlayer.invincible = false;
+    }
+  }
+
+  if (newPlayer.hasStar) {
+    newPlayer.starTimer--;
+    if (newPlayer.starTimer <= 0) {
+      newPlayer.hasStar = false;
+    }
+  }
+
+  if (newPlayer.hasSpeed) {
+    newPlayer.speedTimer--;
+    if (newPlayer.speedTimer <= 0) {
+      newPlayer.hasSpeed = false;
     }
   }
 
@@ -333,7 +383,11 @@ function updateGame(
     if (!enemy.alive) continue;
 
     if (checkCollision(newPlayer, enemy)) {
-      if (newPlayer.vy > 0 && newPlayer.y + newPlayer.height < enemy.y + enemy.height / 2) {
+      if (newPlayer.hasStar) {
+        newEnemies[i] = { ...enemy, alive: false };
+        newPlayer.score += 200;
+        soundManager.stomp();
+      } else if (newPlayer.vy > 0 && newPlayer.y + newPlayer.height < enemy.y + enemy.height / 2) {
         newEnemies[i] = { ...enemy, alive: false };
         newPlayer.vy = JUMP_FORCE / 2;
         newPlayer.score += 100;
@@ -421,6 +475,18 @@ function updateGame(
         }
         newPlayer.hasFire = true;
         newPlayer.score += 1000;
+        soundManager.powerUp();
+      } else if (pu.type === 'star') {
+        newPlayer.hasStar = true;
+        newPlayer.starTimer = STAR_DURATION;
+        newPlayer.invincible = true;
+        newPlayer.invincibleTimer = Math.max(newPlayer.invincibleTimer, STAR_DURATION);
+        newPlayer.score += 1500;
+        soundManager.powerUp();
+      } else if (pu.type === 'speed') {
+        newPlayer.hasSpeed = true;
+        newPlayer.speedTimer = SPEED_DURATION;
+        newPlayer.score += 800;
         soundManager.powerUp();
       }
     }
