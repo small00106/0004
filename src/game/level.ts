@@ -47,42 +47,186 @@ export function generateLevel(): { blocks: Block[]; enemies: Enemy[]; powerUps: 
     });
   }
 
-  addBrickRow(blocks, 256, GROUND_Y - BLOCK_SIZE * 4, 5, 'brick');
-  addBrickRow(blocks, 288, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'coin');
-  addBrickRow(blocks, 320, GROUND_Y - BLOCK_SIZE * 4, 1, 'brick');
+  addBrickRow(blocks, 256, GROUND_Y - BLOCK_SIZE * 3, 2, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 320,
+    y: GROUND_Y - BLOCK_SIZE * 3,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'coin',
+  });
+  addBrickRow(blocks, 352, GROUND_Y - BLOCK_SIZE * 3, 2, 'brick');
 
-  addBrickRow(blocks, 416, GROUND_Y - BLOCK_SIZE * 2, 4, 'brick');
-  addBrickRow(blocks, 448, GROUND_Y - BLOCK_SIZE * 2, 1, 'question', 'mushroom');
+  addBrickRow(blocks, 416, GROUND_Y - BLOCK_SIZE * 2, 1, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 448,
+    y: GROUND_Y - BLOCK_SIZE * 2,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'mushroom',
+  });
+  addBrickRow(blocks, 480, GROUND_Y - BLOCK_SIZE * 2, 2, 'brick');
 
-  addBrickRow(blocks, 768, GROUND_Y - BLOCK_SIZE * 3, 3, 'brick');
-  addBrickRow(blocks, 800, GROUND_Y - BLOCK_SIZE * 5, 1, 'question', 'coin');
-  addBrickRow(blocks, 832, GROUND_Y - BLOCK_SIZE * 5, 1, 'special', 'star');
-  addBrickRow(blocks, 864, GROUND_Y - BLOCK_SIZE * 3, 1, 'brick');
+  addBrickRow(blocks, 768, GROUND_Y - BLOCK_SIZE * 3, 1, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 800,
+    y: GROUND_Y - BLOCK_SIZE * 3,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'coin',
+  });
+  addBrickRow(blocks, 832, GROUND_Y - BLOCK_SIZE * 3, 1, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 864,
+    y: GROUND_Y - BLOCK_SIZE * 3,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'flower',
+  });
+  addBrickRow(blocks, 896, GROUND_Y - BLOCK_SIZE * 3, 2, 'brick');
 
-  addBrickRow(blocks, 1024, GROUND_Y - BLOCK_SIZE * 4, 7, 'brick');
-  addBrickRow(blocks, 1056, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'flower');
-  addBrickRow(blocks, 1120, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'coin');
-  addBrickRow(blocks, 1184, GROUND_Y - BLOCK_SIZE * 5, 1, 'special', 'speed');
+  addBrickRow(blocks, 1088, GROUND_Y - BLOCK_SIZE * 3, 1, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 1120,
+    y: GROUND_Y - BLOCK_SIZE * 3,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'coin',
+  });
+  addBrickRow(blocks, 1152, GROUND_Y - BLOCK_SIZE * 3, 1, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 1184,
+    y: GROUND_Y - BLOCK_SIZE * 3,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'mushroom',
+  });
+  addBrickRow(blocks, 1216, GROUND_Y - BLOCK_SIZE * 3, 2, 'brick');
 
-  addBrickRow(blocks, 1600, GROUND_Y - BLOCK_SIZE * 2, 1, 'question', 'coin');
-  addBrickRow(blocks, 1664, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'mushroom');
-  addBrickRow(blocks, 1696, GROUND_Y - BLOCK_SIZE * 4, 2, 'brick');
-  addBrickRow(blocks, 1728, GROUND_Y - BLOCK_SIZE * 5, 1, 'question', 'coin');
-  addBrickRow(blocks, 1760, GROUND_Y - BLOCK_SIZE * 5, 1, 'special', 'star');
+  addBrickRow(blocks, 1664, GROUND_Y - BLOCK_SIZE * 3, 2, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 1728,
+    y: GROUND_Y - BLOCK_SIZE * 3,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'flower',
+  });
+  addBrickRow(blocks, 1760, GROUND_Y - BLOCK_SIZE * 3, 2, 'brick');
 
-  addBrickRow(blocks, 2048, GROUND_Y - BLOCK_SIZE * 3, 8, 'brick');
-  addBrickRow(blocks, 2080, GROUND_Y - BLOCK_SIZE * 3, 1, 'question', 'flower');
-  addBrickRow(blocks, 2176, GROUND_Y - BLOCK_SIZE * 4, 1, 'special', 'speed');
+  addBrickRow(blocks, 2048, GROUND_Y - BLOCK_SIZE * 2, 1, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 2080,
+    y: GROUND_Y - BLOCK_SIZE * 2,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'coin',
+  });
+  addBrickRow(blocks, 2112, GROUND_Y - BLOCK_SIZE * 2, 2, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 2176,
+    y: GROUND_Y - BLOCK_SIZE * 2,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'coin',
+  });
+  addBrickRow(blocks, 2208, GROUND_Y - BLOCK_SIZE * 2, 4, 'brick');
 
-  addBrickRow(blocks, 384, GROUND_Y - BLOCK_SIZE * 4, 2, 'brick');
-  addBrickRow(blocks, 512, GROUND_Y - BLOCK_SIZE * 3, 3, 'brick');
-  addBrickRow(blocks, 544, GROUND_Y - BLOCK_SIZE * 5, 2, 'brick');
-  addBrickRow(blocks, 1216, GROUND_Y - BLOCK_SIZE * 3, 3, 'brick');
-  addBrickRow(blocks, 1248, GROUND_Y - BLOCK_SIZE * 5, 2, 'brick');
-  addBrickRow(blocks, 1536, GROUND_Y - BLOCK_SIZE * 4, 2, 'brick');
-  addBrickRow(blocks, 2304, GROUND_Y - BLOCK_SIZE * 4, 4, 'brick');
-  addBrickRow(blocks, 2336, GROUND_Y - BLOCK_SIZE * 5, 2, 'brick');
-  addBrickRow(blocks, 2560, GROUND_Y - BLOCK_SIZE * 3, 3, 'brick');
+  addBrickRow(blocks, 2432, GROUND_Y - BLOCK_SIZE * 3, 2, 'brick');
+  blocks.push({
+    id: genId(),
+    x: 2496,
+    y: GROUND_Y - BLOCK_SIZE * 3,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'question',
+    hit: false,
+    hasItem: 'mushroom',
+  });
+  addBrickRow(blocks, 2528, GROUND_Y - BLOCK_SIZE * 3, 1, 'brick');
+
+  addBrickRow(blocks, 2560, GROUND_Y - BLOCK_SIZE * 2, 5, 'brick');
+
+  blocks.push({
+    id: genId(),
+    x: 128,
+    y: GROUND_Y - BLOCK_SIZE * 4,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'special',
+    hit: false,
+    hasItem: 'star',
+  });
+
+  blocks.push({
+    id: genId(),
+    x: 544,
+    y: GROUND_Y - BLOCK_SIZE * 4,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'special',
+    hit: false,
+    hasItem: 'speed',
+  });
+
+  blocks.push({
+    id: genId(),
+    x: 992,
+    y: GROUND_Y - BLOCK_SIZE * 4,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'special',
+    hit: false,
+    hasItem: 'star',
+  });
+
+  blocks.push({
+    id: genId(),
+    x: 1600,
+    y: GROUND_Y - BLOCK_SIZE * 4,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'special',
+    hit: false,
+    hasItem: 'speed',
+  });
+
+  blocks.push({
+    id: genId(),
+    x: 2272,
+    y: GROUND_Y - BLOCK_SIZE * 4,
+    width: BLOCK_SIZE,
+    height: BLOCK_SIZE,
+    type: 'special',
+    hit: false,
+    hasItem: 'star',
+  });
 
   addStairs(blocks, 2800, GROUND_Y, 8);
 
@@ -116,26 +260,17 @@ export function generateLevel(): { blocks: Block[]; enemies: Enemy[]; powerUps: 
     hit: false,
   });
 
-  enemies.push(createEnemy('goomba', 420, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 780, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 820, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('koopa', 900, GROUND_Y - KOOPA_HEIGHT));
-  enemies.push(createEnemy('goomba', 1100, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 1180, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('koopa', 1560, GROUND_Y - KOOPA_HEIGHT));
-  enemies.push(createEnemy('goomba', 1780, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 500, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('koopa', 850, GROUND_Y - KOOPA_HEIGHT));
+  enemies.push(createEnemy('goomba', 1200, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 1560, GROUND_Y - GOOMBA_HEIGHT));
   enemies.push(createEnemy('koopa', 2000, GROUND_Y - KOOPA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2200, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2280, GROUND_Y - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('koopa', 2350, GROUND_Y - KOOPA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2680, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2350, GROUND_Y - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2650, GROUND_Y - GOOMBA_HEIGHT));
 
-  enemies.push(createEnemy('goomba', 416 + 16, GROUND_Y - BLOCK_SIZE * 2 - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 512 + 16, GROUND_Y - BLOCK_SIZE * 3 - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 1024 + 32, GROUND_Y - BLOCK_SIZE * 4 - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2048 + 64, GROUND_Y - BLOCK_SIZE * 3 - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 2304 + 32, GROUND_Y - BLOCK_SIZE * 4 - GOOMBA_HEIGHT));
-  enemies.push(createEnemy('goomba', 1696 + 16, GROUND_Y - BLOCK_SIZE * 4 - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 800, GROUND_Y - BLOCK_SIZE * 3 - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 1120, GROUND_Y - BLOCK_SIZE * 3 - GOOMBA_HEIGHT));
+  enemies.push(createEnemy('goomba', 2144, GROUND_Y - BLOCK_SIZE * 2 - GOOMBA_HEIGHT));
 
   return { blocks, enemies, powerUps };
 }
