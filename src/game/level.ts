@@ -61,7 +61,7 @@ export function generateLevel(): { blocks: Block[]; enemies: Enemy[]; powerUps: 
   addBrickRow(blocks, 1024, GROUND_Y - BLOCK_SIZE * 4, 7, 'brick');
   addBrickRow(blocks, 1056, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'flower');
   addBrickRow(blocks, 1120, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'coin');
-  addBrickRow(blocks, 1152, GROUND_Y - BLOCK_SIZE * 4, 1, 'special', 'speed');
+  addBrickRow(blocks, 1120, GROUND_Y - BLOCK_SIZE * 6, 1, 'special', 'speed');
 
   addBrickRow(blocks, 1600, GROUND_Y - BLOCK_SIZE * 2, 1, 'question', 'coin');
   addBrickRow(blocks, 1664, GROUND_Y - BLOCK_SIZE * 4, 1, 'question', 'mushroom');
@@ -70,7 +70,7 @@ export function generateLevel(): { blocks: Block[]; enemies: Enemy[]; powerUps: 
 
   addBrickRow(blocks, 2048, GROUND_Y - BLOCK_SIZE * 3, 8, 'brick');
   addBrickRow(blocks, 2080, GROUND_Y - BLOCK_SIZE * 3, 1, 'question', 'flower');
-  addBrickRow(blocks, 2176, GROUND_Y - BLOCK_SIZE * 3, 1, 'special', 'speed');
+  addBrickRow(blocks, 2176, GROUND_Y - BLOCK_SIZE * 5, 1, 'special', 'speed');
 
   addBrickRow(blocks, 384, GROUND_Y - BLOCK_SIZE * 4, 2, 'brick');
   addBrickRow(blocks, 512, GROUND_Y - BLOCK_SIZE * 5, 3, 'brick');

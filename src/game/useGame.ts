@@ -375,6 +375,34 @@ function updateGame(
       newEnemy.alive = false;
     }
 
+    if (newEnemy.vy === 0 && isOnGround(newEnemy, newBlocks)) {
+      const nextX = newEnemy.vx > 0
+        ? newEnemy.x + newEnemy.width + 2
+        : newEnemy.x - 2;
+      const groundCheck = {
+        x: nextX,
+        y: newEnemy.y + newEnemy.height + 1,
+        width: 1,
+        height: 2,
+      };
+      let hasGroundAhead = false;
+      for (const block of newBlocks) {
+        if ((block.type === 'ground' || block.type === 'brick' || block.type === 'question' || block.type === 'special') && checkCollision(groundCheck, block)) {
+          hasGroundAhead = true;
+          break;
+        }
+      }
+      if (!hasGroundAhead) {
+        newEnemy.vx = -newEnemy.vx;
+        newEnemy.direction = (newEnemy.direction * -1) as 1 | -1;
+        if (newEnemy.vx > 0) {
+          newEnemy.x += 2;
+        } else {
+          newEnemy.x -= 2;
+        }
+      }
+    }
+
     return newEnemy;
   });
 
@@ -572,6 +600,21 @@ function isOnBlock(player: { x: number; y: number; width: number; height: number
     x: player.x + 2,
     y: player.y + player.height,
     width: player.width - 4,
+    height: 2,
+  };
+  for (const block of blocks) {
+    if (checkCollision(feet, block)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isOnGround(obj: { x: number; y: number; width: number; height: number }, blocks: Block[]): boolean {
+  const feet = {
+    x: obj.x + 2,
+    y: obj.y + obj.height,
+    width: obj.width - 4,
     height: 2,
   };
   for (const block of blocks) {
