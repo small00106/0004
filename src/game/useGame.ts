@@ -237,7 +237,7 @@ function updateGame(
   if (newPlayer.x + newPlayer.width > WORLD_WIDTH) newPlayer.x = WORLD_WIDTH - newPlayer.width;
 
   newPlayer.y += newPlayer.vy;
-  const collisionY = checkBlockCollisions(newPlayer, newBlocks);
+  const collisionY = checkBlockCollisions(newPlayer, newBlocks, newPlayer.vy);
   if (collisionY) {
     if (newPlayer.vy > 0) {
       newPlayer.y = collisionY.y - newPlayer.height;
@@ -585,14 +585,27 @@ function updateGame(
 
 function checkBlockCollisions(
   obj: { x: number; y: number; width: number; height: number },
-  blocks: Block[]
+  blocks: Block[],
+  vy?: number
 ): Block | null {
+  let closest: Block | null = null;
+  let closestDist = Infinity;
   for (const block of blocks) {
     if (checkCollision(obj, block)) {
-      return block;
+      if (vy !== undefined) {
+        const dist = vy < 0
+          ? block.y + block.height - obj.y
+          : obj.y + obj.height - block.y;
+        if (dist < closestDist && dist > 0) {
+          closestDist = dist;
+          closest = block;
+        }
+      } else {
+        return block;
+      }
     }
   }
-  return null;
+  return closest;
 }
 
 function isOnBlock(player: { x: number; y: number; width: number; height: number }, blocks: Block[]): boolean {

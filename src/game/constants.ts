@@ -1,7 +1,7 @@
 export const GRAVITY = 0.55;
 export const JUMP_FORCE = -13.5;
 export const JUMP_HOLD_GRAVITY = 0.25;
-export const JUMP_RELEASE_BOOST = -3;
+export const JUMP_RELEASE_BOOST = -7;
 export const MOVE_SPEED = 4;
 export const MAX_FALL_SPEED = 14;
 export const FRICTION = 0.85;
